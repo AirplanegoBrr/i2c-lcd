@@ -249,7 +249,7 @@ module.exports = class LCD {
         this.write(this.SETDDRAMADDR, this.displayPorts.CMD);
     }
 
-    static getChar(charId) {
+    getChar(charId) {
         return (String.fromCharCode(charId));
     }
 }

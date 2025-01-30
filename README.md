@@ -19,13 +19,43 @@ Assuming the following wiring (and powered by USB):
 | GP3  | SCL     |
 
 ```js
-const LCD = require('lcd');
+const LCD = require('i2c-lcd');
 const lcd = new LCD();
 lcd.begin();
 ```
 
 ## Examples
-Coming soon.
+
+### Adding text to LCD
+
+This can be done via the `lcd.print(string)` function
+
+```js
+const LCD = require("./lcd")
+let lcd = new LCD()
+
+lcd.begin();
+
+lcd.print("Hello, World!")
+```
+
+### Create custom symbols
+
+Making a symbol is very easy!
+
+First you must load the symbol to the LCD, you can do this via the `lcd.createChar(id, symbol)` function
+
+```js
+const LCD = require("i2c-lcd")
+let lcd = new LCD()
+
+lcd.begin();
+
+lcd.createChar(1, [0,10,10,0,17,14,0,0]) // Happy face data
+lcd.createChar(2, [0,10,0,14,17,17,17,14]) // Shocked face data
+
+lcd.print(lcd.getChar(1)+lcd.getChar(2)) // Happy face | Shocked face
+```
 
 ## API - Class: LCD
 ### Constructor
@@ -35,6 +65,8 @@ Coming soon.
 |-----------|---------|--------------------------------|
 | busNumber | 1       | bus number of the i2c device   |
 | address   | 0x27    | address of the i2c device      |
+| sda       | 26      | SDA pin of the i2c device      |
+| scl       | 27      | SCL pin of the i2c device      |
 | cols      | 16      | character width of the display |
 | rows      | 2       | number of lines in the display  |
 ### Properties (read-only)
@@ -42,6 +74,10 @@ Coming soon.
     - the bus number declared when instantiating the LCD object
 - `address`
     - the i2c address declared when instantiating the LCD object
+- `sda`
+    - the i2c sda pin declared when instantiating the LCD object
+- `scl`
+    - the i2c scl pin declared when instantiating the LCD object
 - `cols`
     - the number of characters width declared when instantiating the LCD object
 - `rows`
@@ -89,7 +125,6 @@ Coming soon.
     - the five least significant bits of each byte determine the pixels in that row
     - to display a custom character on the screen, use `print(LCD.getChar(id))`
     - for more information on creating characters, check out [this tool](https://www.quinapalus.com/hd44780udg.html)
-### Static Methods
 - `getChar(id)`
     - gets the custom character stored at the specified id
 
