@@ -3,7 +3,7 @@
 const {I2C} = require('i2c');
 
 module.exports = class LCD {
-    constructor(busNumber = 1, address = 0x27, cols = 16, rows = 2) {
+    constructor(busNumber = 1, address = 0x27, sda = 26, scl = 27, cols = 16, rows = 2) {
         this.displayPorts = { // unused display ports excluded
             E: 0x04,        
             CHR: 1,
@@ -43,6 +43,9 @@ module.exports = class LCD {
         this.ADDRESS = address;
         this.COLS = cols;
         this.ROWS = rows;
+        this.SDA = sda;
+        this.SCL = scl;
+
         this.I2C = null;
         this.BLINKING = false;
         this.CURSOR = false;
@@ -55,6 +58,14 @@ module.exports = class LCD {
 
     get address() {
         return this.ADDRESS;
+    }
+
+    get sda() {
+        return this.SDA;
+    }
+
+    get scl() {
+        return this.SCL;
     }
 
     get cols() {
@@ -86,7 +97,7 @@ module.exports = class LCD {
         if (this.BEGAN) {
             throw new Error('The LCD is already initialized.');
         }
-        this.I2C = new I2C(this.BUSNUMBER, { mode: I2C.MASTER });
+        this.I2C = new I2C(this.BUSNUMBER, { mode: I2C.MASTER, scl: this.SCL, sda: this.SDA });
         this.write4(0x33, this.displayPorts.CMD); // initialization
         this.write4(0x32, this.displayPorts.CMD); // initialization
         this.write4(0x06, this.displayPorts.CMD); // initialization
